@@ -1,0 +1,39 @@
+command and information for selfhosted runner
+
+# Create a folder
+$ mkdir actions-runner && cd actions-runnerCopied
+# Download the latest runner package
+$ curl -o actions-runner-linux-x64-2.328.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.328.0/actions-runner-linux-x64-2.328.0.tar.gzCopied
+# Optional: Validate the hash
+$ echo "01066fad3a2893e63e6ca880ae3a1fad5bf9329d60e77ee15f2b97c148c3cd4e  actions-runner-linux-x64-2.328.0.tar.gz" | shasum -a 256 -cCopied
+# Extract the installer
+$ tar xzf ./actions-runner-linux-x64-2.328.0.tar.gzCopied
+
+
+
+Configure
+# Create the runner and start the configuration experience
+$ ./config.sh --url https://github.com/abhisheksah255/Swaggito_FoodApplication --token AMO34AI3J5GERKAUTWYDFWDI46KCGCopied
+# Last step, run it!
+$ ./run.shCopied
+
+
+Using your self-hosted runner
+# Use this YAML in your workflow file for each job
+runs-on: self-hosted
+
+
+
+
+
+# Runner Registration
+
+Enter the name of the runner group to add this runner to: [press Enter for Default]
+
+Enter the name of runner: [press Enter for ip-172-31-26-240] firefox
+
+This runner will have the following labels: 'self-hosted', 'Linux', 'X64'
+Enter any additional labels (ex. label-1,label-2): [press Enter to skip] firefox,abhi,drago,myrunner
+
+√ Runner successfully added
+√ Runner connection is good

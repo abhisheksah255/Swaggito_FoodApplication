@@ -8,13 +8,16 @@ on:
 
 jobs:
   build:
-    name: SonarqubeConfiguration
-    runs-on: ubuntu-latest
+    name: This is Build Stage
+    runs-on: firefox
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - uses: sonarsource/sonarqube-scan-action@master
+      - name: Sonarqube Scan
+        if: always()  # Ensure the scan runs even if the checkout step fails
+        uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
@@ -24,3 +27,6 @@ jobs:
       #   timeout-minutes: 5
       #   env:
       #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Trivy File Scan
+        run: trivy fs . > trivyfs.txt
