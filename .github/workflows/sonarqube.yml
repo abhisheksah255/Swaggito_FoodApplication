@@ -1,3 +1,61 @@
+# name: CICD workflow for this Project
+
+# on:
+#   push:
+#     branches:
+#       - main
+#   workflow_dispatch:
+
+
+# jobs:
+#   build:
+#     name: This is Build Stage
+#     # runs-on: firefox
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+#       - name: Sonarqube Scan
+#         if: always()  # Ensure the scan runs even if the checkout step fails
+#         uses: sonarsource/sonarqube-scan-action@master
+#         env:
+#           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+#       # If you wish to fail your job when the Quality Gate is red, uncomment the
+#       # following lines. This would typically be used to fail a deployment.
+#       # - uses: sonarsource/sonarqube-quality-gate-action@master
+#       #   timeout-minutes: 5
+#       #   env:
+#       #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+#       - name: Install Trivy
+#         run: |
+#         #install trivy
+#         sudo apt-get install wget apt-transport-https gnupg lsb-release -y 
+#         wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
+#         echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
+#         sudo apt-get update
+#         sudo apt-get install trivy -y
+
+#       - name: Trivy File Scan
+#         run: trivy fs . > trivyfs.txt
+  
+
+
+#       - name: Docker Build and Push
+#         uses: mr-smithers-excellent/docker-build-push@v6
+#         with:
+#              image: abhisheksah05081998/swiggito-application
+#              registry: docker.io
+#              username: ${{ secrets.DOCKERHUB_USERNAME }}
+#              password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+#       - name: Trivy Image Scan
+#         run: trivy image abhisheksah05081998/swiggito-application > trivyimage.txt
+
+
 name: CICD workflow for this Project
 
 on:
@@ -6,51 +64,52 @@ on:
       - main
   workflow_dispatch:
 
-
 jobs:
   build:
     name: This is Build Stage
-    # runs-on: firefox
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Sonarqube Scan
-        if: always()  # Ensure the scan runs even if the checkout step fails
+          fetch-depth: 0  # Full clone for better analysis
+
+      - name: SonarQube Scan
+        if: always()
         uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      # If you wish to fail your job when the Quality Gate is red, uncomment the
-      # following lines. This would typically be used to fail a deployment.
-      # - uses: sonarsource/sonarqube-quality-gate-action@master
+
+      # Optional: Uncomment to fail job if Quality Gate fails
+      # - name: SonarQube Quality Gate
+      #   uses: sonarsource/sonarqube-quality-gate-action@master
       #   timeout-minutes: 5
       #   env:
       #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Install Trivy
         run: |
-        #install trivy
-        sudo apt-get install wget apt-transport-https gnupg lsb-release -y 
-        wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
-        echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
-        sudo apt-get update
-        sudo apt-get install trivy -y
+          sudo apt-get update
+          sudo apt-get install wget apt-transport-https gnupg lsb-release -y
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
+          echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install trivy -y
 
       - name: Trivy File Scan
         run: trivy fs . > trivyfs.txt
-  
-
 
       - name: Docker Build and Push
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
-             image: abhisheksah05081998/swiggito-application
-             registry: docker.io
-             username: ${{ secrets.DOCKERHUB_USERNAME }}
-             password: ${{ secrets.DOCKERHUB_TOKEN }}
+          image: abhisheksah05081998/swiggito-application
+          registry: docker.io
+          dockerfile: Dockerfile
+          tags: latest
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Trivy Image Scan
-        run: trivy image abhisheksah05081998/swiggito-application > trivyimage.txt
+        run: trivy image abhisheksah05081998/swiggito-application:latest > trivyimage.txt
