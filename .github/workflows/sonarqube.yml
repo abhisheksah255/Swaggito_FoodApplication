@@ -1,4 +1,4 @@
-name: sonarqube check
+name: CICD workflow for this Project
 
 on:
   push:
