@@ -113,3 +113,13 @@ jobs:
 
       - name: Trivy Image Scan
         run: trivy image abhisheksah05081998/swiggito-application:latest > trivyimage.txt
+
+      - name: Send a Slack Notification
+        if: always()
+        uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#swaggito_app_notification'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
