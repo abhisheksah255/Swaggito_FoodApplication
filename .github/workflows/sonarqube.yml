@@ -23,16 +23,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18.x
-          cache: 'npm
-
-      # If you prefer manual cache, keep your actions/cache step instead of the built-in one above.
-      - name: Restore node_modules from cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            node_modules
-            */*/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm install
@@ -45,6 +36,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITLEAKS_API_TOKEN || github.token }}
         continue-on-error: true        # run and report, but don't block the rest
         if: ${{ always() }}
+
 
       - name: SonarQube Scan
         if: always()
