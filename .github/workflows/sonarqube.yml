@@ -18,11 +18,12 @@ jobs:
         with:
           fetch-depth: 0  # Full clone for better analysis
 
-      - name: Use Node.js ${{ matrix.node-version }}
+
+      - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'               # built-in caching
+          node-version: 18.x
+          cache: 'npm
 
       # If you prefer manual cache, keep your actions/cache step instead of the built-in one above.
       - name: Restore node_modules from cache
