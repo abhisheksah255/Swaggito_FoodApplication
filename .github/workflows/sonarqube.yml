@@ -10,7 +10,7 @@ jobs:
   build:
     name: This is Build Stage
     # runs-on: ubuntu-latest
-    runs-on: firefox
+    runs-on: self-hosted
 
     steps:
       - name: Checkout code
