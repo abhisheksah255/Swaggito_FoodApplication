@@ -29,6 +29,11 @@ jobs:
         run: npm install
         if: ${{ always() }}
 
+      # List the project structure 
+      - name: List project files
+        run: ls -R
+
+
       # ---- Security: secrets scan (optional to block) ----
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
@@ -41,8 +46,8 @@ jobs:
         uses: dependency-check/Dependency-Check_Action@main # Or another suitable action
         with:
           project: GoKhao_foodDelivery
-          path: . # Scan the current directory
-          format: HTML,JSON # Generate HTML and JSON reports
+          path: ./
+          format: JSON,json
 
 
       - name: SonarQube Scan
