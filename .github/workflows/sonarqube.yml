@@ -37,6 +37,13 @@ jobs:
         continue-on-error: true        # run and report, but don't block the rest
         if: ${{ always() }}
 
+      - name: Run OWASP Dependency-Check
+        uses: dependency-check/Dependency-Check_Action@main # Or another suitable action
+        with:
+          project: GoKhao_foodDelivery
+          path: . # Scan the current directory
+          format: HTML,JSON # Generate HTML and JSON reports
+
 
       - name: SonarQube Scan
         if: always()
